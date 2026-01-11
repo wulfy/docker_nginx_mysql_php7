@@ -9,5 +9,5 @@ services:
   my_jenkins:
     image: jenkins/jenkins:lts
     ports:
-      - "5000:5000"
+      - "5050:5000"
       - "8082:8080"

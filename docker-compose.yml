@@ -3,47 +3,21 @@ services:
   my_mysql:
     image: mysql:5
     volumes:
-      - "/Users/llasry/Documents/www/mysql50:/var/lib/mysql"
+      - "/Users/llasry/Documents/www/mysql51:/var/lib/mysql"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - 3306:3306
 
-#  my_node:
-#    image: node:onbuild
-#    volumes:
-#      - ".:/usr/src/app"
-#      - "node_volume:/usr/local/lib/node_modules/npm"
-#    ports:
-#      - "3000:3000"
-#    working_dir: "/usr/share/nginx/html"
-
-#Warning php and nginx document root should be the same (here usr/share/nginx/html)
-
-#  my_casper:
-#    image: zopanix/casperjs
-#    volumes:
-#      - ".:/data"
-#      - "/usr/local/bin"
-#      - "/opt/casperjs/bin"
-#    working_dir: "/usr/local/bin"
-
-  my_php7:
-    build: ./build/webstack
+  my_php:
+    build: ./build/myphp
     depends_on:
       - my_mysql
-    image: webstack
-#    volumes_from:
-#      - my_casper
+    image: my_php
     volumes:
       - "../:/usr/share/nginx/html:rw"
       - "./php7/php.ini:/usr/local/etc/php/php.ini:ro"
-#      - "my_casper_volume:/usr/local/bin/casperjs"
-#      - "node_volume:/usr/local/lib/node_modules/npm"
-#    links:
-#      - my_mysql
-#      - my_mycasper
     ports:
       - "9000:9000"
       - "3000:3000"
@@ -53,7 +27,7 @@ services:
 
   my_nginx:
     depends_on:
-      - my_php7
+      - my_php
     image: nginx:latest
     volumes:
       - "../:/usr/share/nginx/html:rw"
@@ -61,8 +35,6 @@ services:
       - "./nginx/nginx.template.conf:/etc/nginx/conf.d/nginx.template:rw"
       - "./nginx/sites-available:/etc/nginx/sites-available:rw"
       - "./nginx/sites-enabled:/etc/nginx/sites-enabled:rw"
-    links:
-      - my_php7:webstack_php
     environment:
       - KEEPALIVE_TIMEOUT=${KEEPALIVE_TIMEOUT}
     ports:

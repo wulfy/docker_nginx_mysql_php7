@@ -17,5 +17,3 @@ services:
       - "9300:9300"
     labels:
       NAME: "stats"
-#volumes:
-#    my_casper_volume : {}
